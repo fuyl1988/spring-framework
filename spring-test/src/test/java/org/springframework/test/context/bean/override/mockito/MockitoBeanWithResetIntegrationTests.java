@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +33,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
+import static org.springframework.test.context.bean.override.mockito.MockReset.BEFORE;
 
 /**
  * Integration tests for {@link MockitoBean} that validate automatic reset
@@ -46,10 +46,10 @@ import static org.mockito.Mockito.doReturn;
 @TestMethodOrder(OrderAnnotation.class)
 public class MockitoBeanWithResetIntegrationTests {
 
-	@MockitoBean(reset = MockReset.BEFORE)
+	@MockitoBean(reset = BEFORE)
 	ExampleService service;
 
-	@MockitoBean(reset = MockReset.BEFORE)
+	@MockitoBean(reset = BEFORE)
 	FailingExampleService failingService;
 
 	@Order(1)
@@ -101,7 +101,7 @@ public class MockitoBeanWithResetIntegrationTests {
 		}
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	static class Config {
 
 		@Bean("service")
@@ -110,7 +110,6 @@ public class MockitoBeanWithResetIntegrationTests {
 		}
 
 		@Bean("factory")
-		@Qualifier("factory")
 		FailingExampleServiceFactory factory() {
 			return new FailingExampleServiceFactory();
 		}
